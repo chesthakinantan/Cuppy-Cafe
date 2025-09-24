@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Cuppy Café — Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pink:#f8c8dc;
+      --beige:#fdf6ec;
+      --brown:#6b4226;
+      --accent:#d46a8a;
+      --text:#4a3c3c;
+      --shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Poppins",sans-serif;background:var(--beige);color:var(--text);}
+    nav{
+      position: fixed; top:0; left:0; width:100%;
+      background: linear-gradient(90deg,var(--pink),#fde7d9);
+      padding:14px 10px; z-index:1000; box-shadow:var(--shadow);
+      display:flex; justify-content:center; align-items:center;
+    }
+    nav .nav-inner{width:100%;max-width:1200px;display:flex;gap:18px;align-items:center;justify-content:center}
+    nav a{color:var(--text);text-decoration:none;font-weight:600;margin:0 10px}
+    nav a:hover{color:var(--brown)}
+    main{padding-top:100px;max-width:1200px;margin:0 auto;padding:20px;}
+    h1{text-align:center;font-family:'Pacifico',cursive;font-size:2.2rem;color:var(--accent);margin-bottom:30px}
+    
+    .checkout-container{display:grid;grid-template-columns:1fr 1fr;gap:30px;}
+    .card{
+      background:#fff;border-radius:14px;box-shadow:var(--shadow);
+      padding:20px;
+    }
+    .card h2{color:var(--accent);margin-bottom:15px;font-size:1.4rem}
+    
+    .order-item{
+      display:flex;align-items:center;justify-content:space-between;
+      margin:12px 0;padding-bottom:10px;border-bottom:1px dashed #f0d8de;
+    }
+    .order-info{display:flex;align-items:center;gap:12px;}
+    .order-info img{
+      width:50px;height:50px;border-radius:10px;object-fit:cover;box-shadow:var(--shadow);
+    }
+    .order-text{font-size:0.95rem;}
+    .order-text span{display:block;}
+    .order-sub{font-weight:600;color:var(--brown)}
+    
+    .order-total{margin-top:15px;font-weight:700;font-size:1.2rem;color:var(--brown);text-align:right}
+    
+    form label{display:block;margin-top:12px;font-weight:600;font-size:0.9rem;color:var(--accent)}
+    form input, form textarea, form select{
+      width:100%;padding:10px;margin-top:6px;border:1px solid #f0d8de;border-radius:8px;font-family:inherit
+    }
+    form textarea{resize:vertical;min-height:80px}
+    .submit-btn{
+      margin-top:20px;background:var(--accent);color:#fff;padding:12px 24px;border:none;
+      border-radius:999px;font-size:1rem;cursor:pointer;display:block;width:100%;text-align:center
+    }
+    .submit-btn:hover{opacity:0.9}
+    .empty{text-align:center;color:#777;padding:20px;}
+    
+    /* MODAL POPUP */
+    .modal{
+      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.3); backdrop-filter:blur(4px);
+      justify-content:center; align-items:center; z-index:2000;
+    }
+    .modal-content{
+      background:#fff; padding:30px; border-radius:20px; text-align:center;
+      box-shadow:var(--shadow); max-width:350px; width:90%;
+      animation:pop 0.4s ease;
+    }
+    .modal-content h2{color:var(--accent);margin-bottom:10px;}
+    .modal-content p{margin-bottom:20px;}
+    .modal-content button{
+      background:var(--accent);color:#fff;border:none;padding:10px 20px;
+      border-radius:999px;cursor:pointer;font-size:1rem;
+    }
+    .modal-content button:hover{opacity:0.9}
+    @keyframes pop{0%{transform:scale(0.7);opacity:0}100%{transform:scale(1);opacity:1}}
+    
+    @media(max-width:900px){
+      .checkout-container{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="home.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="recipes.html">Recipes</a>
+      <a href="cart.html">🛒 Cart</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Checkout 🛍️</h1>
+    <div class="checkout-container">
+      <!-- RINGKASAN PESANAN -->
+      <div class="card">
+        <h2>Ringkasan Pesanan</h2>
+        <div id="order-summary"></div>
+        <div class="order-total" id="order-total">Total: Rp 0</div>
+      </div>
+
+      <!-- FORM DATA DIRI -->
+      <div class="card">
+        <h2>Isi Data Diri</h2>
+        <form id="checkoutForm">
+          <label>Nama Lengkap *</label>
+          <input type="text" id="name" required>
+          <label>Nomor HP *</label>
+          <input type="tel" id="phone" required>
+          <label>Alamat Lengkap *</label>
+          <textarea id="address" required></textarea>
+          <label>Catatan (Opsional)</label>
+          <textarea id="notes"></textarea>
+          <label>Metode Pembayaran *</label>
+          <select id="payment" required>
+            <option value="">--Pilih--</option>
+            <option>Transfer Bank</option>
+            <option>E-Wallet (OVO, Dana, Gopay)</option>
+            <option>COD</option>
+          </select>
+          <button type="submit" class="submit-btn">Kirim Pesanan</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h2>🎉 Pesanan Berhasil 💖</h2>
+      <p>Terima kasih sudah order di <b>Cuppy Café</b> ☕🍰</p>
+      <button onclick="closeModal()">Kembali ke Home</button>
+    </div>
+  </div>
+
+  <script>
+    const CART_KEY = 'cuppy_cart_v1';
+    const ORDERS_KEY = 'cuppy_orders_v1';
+
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+    function fmtRp(n){ 
+      return 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); 
+    }
+
+    let summary = document.getElementById('order-summary');
+    let totalEl = document.getElementById('order-total');
+    let total = 0;
+
+    if(cart.length === 0){
+      summary.innerHTML = '<div class="empty">Keranjang masih kosong 😢</div>';
+    } else {
+      cart.forEach(item=>{
+        let sub = item.price * item.qty;
+        total += sub;
+        summary.innerHTML += `
+          <div class="order-item">
+            <div class="order-info">
+              <img src="${item.img}" alt="${item.name}">
+              <div class="order-text">
+                <span>${item.name} × ${item.qty}</span>
+                <span class="order-sub">${fmtRp(sub)}</span>
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+    totalEl.textContent = "Total: " + fmtRp(total);
+
+    // Form submit handler
+    document.getElementById('checkoutForm').addEventListener('submit', function(e){
+      e.preventDefault();
+
+      if(cart.length === 0){
+        alert("Keranjang masih kosong 😢");
+        return;
+      }
+
+      // ambil data diri
+      let name = document.getElementById('name').value.trim();
+      let phone = document.getElementById('phone').value.trim();
+      let address = document.getElementById('address').value.trim();
+      let notes = document.getElementById('notes').value.trim();
+      let payment = document.getElementById('payment').value;
+
+      // buat order object
+      let order = {
+        id: Date.now(),
+        customer: { name, phone, address, notes, payment },
+        items: cart,
+        total: total,
+        date: new Date().toLocaleString()
+      };
+
+      // simpan ke localStorage
+      let orders = JSON.parse(localStorage.getItem(ORDERS_KEY)) || [];
+      orders.push(order);
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+
+      // kosongkan cart
+      localStorage.removeItem(CART_KEY);
+
+      // tampilkan modal sukses
+      document.getElementById('successModal').style.display = 'flex';
+    });
+
+    function closeModal(){
+      document.getElementById('successModal').style.display = 'none';
+      window.location.href = "home.html"; // balik ke home
+    }
+  </script>
+</body>
+</html>

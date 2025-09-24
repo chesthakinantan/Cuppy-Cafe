@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuppy Café</title>
+  <style>
+    /* 🌸 Font gemes */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fce4ec, #f8ede3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* 🌸 Logo */
+    .logo {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #e75480;
+      animation: fadeInDown 1s ease-in-out;
+    }
+
+    /* 🌸 Tagline */
+    .tagline {
+      font-size: 1.3rem;
+      margin: 15px 0 30px;
+      color: #5c3d2e;
+      animation: fadeInUp 1.2s ease-in-out;
+    }
+
+    /* 🌸 Tombol Start */
+    .start-btn {
+      background: #e75480;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.2s, background 0.3s;
+      animation: bounceIn 1.5s ease-in-out;
+    }
+    .start-btn:hover {
+      background: #d14670;
+      transform: scale(1.05);
+    }
+
+    /* 🌸 Animasi */
+    @keyframes fadeInDown {
+      from {opacity: 0; transform: translateY(-20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    @keyframes bounceIn {
+      0% {transform: scale(0.9);}
+      50% {transform: scale(1.05);}
+      100% {transform: scale(1);}
+    }
+  </style>
+</head>
+<body>
+  <!-- 🌸 Intro Content -->
+  <div class="logo">☕ Cuppy Café</div>
+  <div class="tagline">Cozy place for coffee, tea & sweet treats ✨</div>
+  <button class="start-btn" onclick="startApp()">Start</button>
+
+  <script>
+    function startApp() {
+      window.location.href = "home.html"; // pindah ke halaman home
+    }
+  </script>
+</body>
+</html>

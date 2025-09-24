@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Cuppy Café — Cart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pink:#f8c8dc;
+      --beige:#fdf6ec;
+      --brown:#6b4226;
+      --accent:#d46a8a;
+      --text:#4a3c3c;
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Poppins",sans-serif;background:var(--beige);color:var(--text);line-height:1.4}
+    nav{
+      position: fixed; top:0; left:0; width:100%;
+      background: linear-gradient(90deg,var(--pink),#fde7d9);
+      padding:14px 10px; z-index:1000; box-shadow:var(--shadow);
+      display:flex; justify-content:center; align-items:center;
+    }
+    nav .nav-inner{width:100%;max-width:1200px;display:flex;gap:18px;align-items:center;justify-content:center}
+    nav a{color:var(--text);text-decoration:none;font-weight:600;margin:0 10px}
+    nav a:hover{color:var(--brown)}
+    main{padding-top:90px;max-width:1000px;margin:0 auto;padding-left:20px;padding-right:20px}
+    h1{text-align:center;font-family:'Pacifico',cursive;font-size:2.2rem;color:var(--accent);margin-bottom:20px}
+    table{width:100%;border-collapse:collapse;margin-bottom:20px}
+    th,td{text-align:center;padding:12px;border-bottom:1px solid #f0d8de}
+    th{background:var(--pink);font-weight:600;color:var(--brown)}
+    td img{width:60px;height:60px;object-fit:cover;border-radius:10px}
+    .qty-btn{padding:4px 10px;border:none;border-radius:6px;background:var(--pink);cursor:pointer}
+    .qty-btn:hover{background:var(--accent);color:#fff}
+    .remove-btn{color:var(--accent);cursor:pointer;font-weight:bold}
+    .remove-btn:hover{text-decoration:underline}
+    .total{text-align:center;margin-top:15px;font-size:1.4rem;font-weight:700;color:var(--brown)}
+    .checkout-btn{display:block;margin:20px auto 0;background:var(--accent);color:#fff;padding:12px 24px;border:none;border-radius:999px;font-size:1rem;cursor:pointer}
+    .checkout-btn:hover{opacity:0.9}
+    .empty{text-align:center;padding:40px;color:#777}
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="home.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="recipes.html">Recipes</a>
+      <a href="cart.html">🛒 Cart</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Your Cart</h1>
+    <div id="cartContainer"></div>
+    <div class="total" id="cartTotal">Total: Rp 0</div>
+    <button class="checkout-btn" onclick="goCheckout()">Checkout</button>
+  </main>
+
+  <script>
+    const CART_KEY = 'cuppy_cart_v1';
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+    function fmtRp(n){ return 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+    function renderCart(){
+      const container = document.getElementById('cartContainer');
+      if(cart.length === 0){
+        container.innerHTML = '<div class="empty">Keranjang kosong 💔</div>';
+        document.getElementById('cartTotal').textContent = "Total: Rp 0";
+        return;
+      }
+      let html = `<table>
+        <tr><th>Item</th><th>Name</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Remove</th></tr>`;
+      let total = 0;
+      cart.forEach((item,idx)=>{
+        const sub = item.price * item.qty;
+        total += sub;
+        html += `
+          <tr>
+            <td><img src="${item.img}" alt="${item.name}"></td>
+            <td>${item.name}</td>
+            <td>${fmtRp(item.price)}</td>
+            <td>
+              <button class="qty-btn" onclick="changeQty(${idx},-1)">-</button>
+              ${item.qty}
+              <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+            </td>
+            <td>${fmtRp(sub)}</td>
+            <td><span class="remove-btn" onclick="removeItem(${idx})">✖</span></td>
+          </tr>
+        `;
+      });
+      html += `</table>`;
+      container.innerHTML = html;
+      document.getElementById('cartTotal').textContent = "Total: " + fmtRp(total);
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+    function changeQty(index, delta){
+      cart[index].qty += delta;
+      if(cart[index].qty < 1) cart[index].qty = 1; // minimal qty 1
+      renderCart();
+    }
+
+    function removeItem(index){
+      cart.splice(index,1);
+      renderCart();
+    }
+
+    function goCheckout(){
+      if(cart.length === 0){
+        alert("Keranjang masih kosong!");
+        return;
+      }
+      window.location.href = "checkout.html";
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>

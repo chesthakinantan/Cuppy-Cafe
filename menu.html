@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cuppy Café — Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pink:#f8c8dc;
+      --beige:#fdf6ec;
+      --brown:#6b4226;
+      --accent:#d46a8a;
+      --text:#4a3c3c;
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Poppins",sans-serif;background:var(--beige);color:var(--text);line-height:1.4}
+    /* NAVBAR */
+    nav{
+      position: fixed; top:0; left:0; width:100%;
+      background: linear-gradient(90deg,var(--pink),#fde7d9);
+      padding:14px 10px; z-index:1000; box-shadow:var(--shadow);
+      display:flex; justify-content:center; align-items:center;
+    }
+    nav .nav-inner{width:100%;max-width:1200px;display:flex;gap:18px;align-items:center;justify-content:center}
+    nav a{color:var(--text);text-decoration:none;font-weight:600;margin:0 10px}
+    nav a:hover{color:var(--brown)}
+    /* cart badge */
+    .cart-link{position:relative;display:inline-block}
+    #cartCount{
+      position:absolute; top:-8px; right:-12px;
+      background:var(--accent); color:white; font-size:12px;
+      padding:3px 7px; border-radius:999px; font-weight:700;
+    }
+
+    main{padding-top:84px; max-width:1200px;margin:0 auto;padding-left:20px;padding-right:20px}
+
+    header.page-title{text-align:center;padding:22px 0}
+    header.page-title h1{font-family:'Pacifico',cursive;font-size:2.4rem;color:var(--accent)}
+    header.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+    .controls input[type="search"], .controls select{
+      padding:10px 12px;border-radius:12px;border:1px solid #e6d7da;min-width:200px
+    }
+
+    /* Category Title */
+    .category{margin-top:30px;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+    .category h2{font-family:'Pacifico',cursive;color:var(--brown);font-size:1.6rem;margin:0}
+
+    /* grid */
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+    @media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:420px){.grid{grid-template-columns:repeat(1,1fr)}}
+
+    .card{
+      background:white;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);
+      transition:transform .18s ease;cursor:default;display:flex;flex-direction:column;
+    }
+    .card:hover{transform:translateY(-6px)}
+    .card .thumb{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;cursor:pointer}
+    .card .body{padding:12px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+    .card .title{font-weight:700;margin:6px 0;cursor:pointer}
+    .card .price{color:var(--accent);font-weight:700}
+    .card .meta{margin-top:8px;color:#8b6b6b;font-size:14px}
+    .card .actions{margin-top:10px;display:flex;justify-content:center;gap:8px}
+    .btn{
+      padding:8px 12px;border-radius:999px;border:none;background:var(--pink);cursor:pointer;font-weight:700;
+    }
+    .btn:hover{background:var(--accent);color:white}
+    .fav-btn{background:#fff;border:1px solid #f0cdd3;color:var(--accent)}
+    .fav-btn.active{background:var(--accent);color:white;border-color:var(--accent)}
+
+    /* rating stars */
+    .stars{color:gold;font-size:14px;margin-top:6px}
+
+    /* POPUP */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:2000;padding:20px}
+    .modal{background:white;border-radius:14px;width:100%;max-width:560px;max-height:85vh;overflow:auto;position:relative;box-shadow:0 10px 30px rgba(0,0,0,0.2)}
+    .modal .modal-head{position:sticky;top:0;background:white;padding:12px 16px;border-bottom:1px solid #f0e6e6;display:flex;align-items:center;justify-content:space-between;z-index:10}
+    .modal .modal-head h3{margin:0;font-size:1.15rem}
+    .close-btn{background:white;border:1px solid #f0d8de;color:var(--accent);padding:6px 10px;border-radius:999px;cursor:pointer;font-weight:700}
+    .modal .modal-body{padding:16px}
+    .modal img{width:100%;border-radius:10px;margin-bottom:12px;object-fit:cover}
+    .modal p{margin-bottom:10px}
+    .modal .modal-actions{display:flex;gap:8px;justify-content:flex-start;margin-top:12px}
+
+    /* small helper */
+    .muted{color:#7b5a5a;font-size:14px}
+    footer{margin-top:30px;text-align:center;padding:20px;color:#6b4e4e}
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="home.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="recipes.html">Recipes</a>
+      <a href="cart.html" class="cart-link">🛒 Cart <span id="cartCount">0</span></a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-title">
+      <h1>Cuppy Café — Menu</h1>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search menu... (ketik nama atau harga)"/>
+        <select id="categoryFilter">
+          <option value="all">All categories</option>
+          <option value="coffee">Coffee ☕</option>
+          <option value="tea">Tea 🍵</option>
+          <option value="noncoffee">Non-Coffee 🥤</option>
+          <option value="dessert">Dessert 🍰</option>
+        </select>
+      </div>
+    </header>
+
+    <!-- Coffee -->
+    <section id="coffeeSection">
+      <div class="category"><h2>Coffee ☕</h2><div class="muted">— 10 items</div></div>
+      <div class="grid" id="coffeeGrid"></div>
+    </section>
+
+    <!-- Tea -->
+    <section id="teaSection">
+      <div class="category"><h2>Tea 🍵</h2><div class="muted">— 10 items</div></div>
+      <div class="grid" id="teaGrid"></div>
+    </section>
+
+    <!-- Non-Coffee -->
+    <section id="noncoffeeSection">
+      <div class="category"><h2>Non-Coffee 🥤</h2><div class="muted">— 10 items</div></div>
+      <div class="grid" id="noncoffeeGrid"></div>
+    </section>
+
+    <!-- Dessert -->
+    <section id="dessertSection">
+      <div class="category"><h2>Dessert 🍰</h2><div class="muted">— 10 items</div></div>
+      <div class="grid" id="dessertGrid"></div>
+    </section>
+
+    <footer>
+      © 2025 Cuppy Café — Chestha Kinantan Lunneta
+    </footer>
+  </main>
+
+  <!-- POPUP / MODAL -->
+  <div id="overlay" class="overlay" onclick="overlayClick(event)">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h3 id="modalTitle">Title</h3>
+        <button class="close-btn" onclick="closeModal(event)">✖</button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImg" src="" alt="">
+        <p id="modalDesc"></p>
+        <div><strong>Price:</strong> <span id="modalPrice"></span></div>
+        <div class="stars" id="modalRating"></div>
+        <div class="modal-actions">
+          <button class="btn" id="modalAddBtn">Add to Cart</button>
+          <button class="btn fav-btn" id="modalFavBtn">❤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**********************
+     Data — 40 items (10 per kategori)
+     filenames: img/coffee1.png ... coffee10.png, tea1.png ... tea10.png,
+                noncoffee1.png ... noncoffee10.png, dessert1.png ... dessert10.png
+    ***********************/
+    const menus = {
+      coffee: [
+        {id:'coffee1', name:'Espresso', price:20000, img:'img/coffee1.png', desc:'Kopi pekat khas Italia, hitam tanpa susu.' , rating:4.6},
+        {id:'coffee2', name:'Americano', price:22000, img:'img/coffee2.png', desc:'Espresso + air panas, smooth & bold.' , rating:4.4},
+        {id:'coffee3', name:'Cappuccino', price:28000, img:'img/coffee3.jpg', desc:'Espresso, steamed milk & foam lembut.' , rating:4.7},
+        {id:'coffee4', name:'Cafe Latte', price:30000, img:'img/coffee4.png', desc:'Milky latte, comfort drink.' , rating:4.5},
+        {id:'coffee5', name:'Caramel Macchiato', price:32000, img:'img/coffee5.png', desc:'Vanilla + caramel + espresso.' , rating:4.6},
+        {id:'coffee6', name:'Mocha', price:33000, img:'img/coffee6.png', desc:'Kombinasi cokelat & espresso.' , rating:4.5},
+        {id:'coffee7', name:'Flat White', price:29000, img:'img/coffee7.png', desc:'Tekstur milk halus, kopi kuat.' , rating:4.4},
+        {id:'coffee8', name:'Cortado', price:27000, img:'img/coffee8.png', desc:'Espresso + sedikit susu, seimbang.' , rating:4.3},
+        {id:'coffee9', name:'Affogato', price:35000, img:'img/coffee9.png', desc:'Espresso panas di atas es krim vanilla.' , rating:4.8},
+        {id:'coffee10', name:'Iced Latte', price:30000, img:'img/coffee10.png', desc:'Latte dingin, menyegarkan.' , rating:4.5}
+      ],
+      tea: [
+        {id:'tea1', name:'English Breakfast', price:18000, img:'img/tea1.png', desc:'Teh hitam klasik, cocok pagi hari.' , rating:4.2},
+        {id:'tea2', name:'Earl Grey', price:20000, img:'img/tea2.png', desc:'Teh bergamot aromatik.' , rating:4.4},
+        {id:'tea3', name:'Green Tea', price:22000, img:'img/tea3.png', desc:'Teh hijau segar & menenangkan.' , rating:4.5},
+        {id:'tea4', name:'Jasmine Tea', price:22000, img:'img/tea4.png', desc:'Floral & ringan, harum melati.' , rating:4.4},
+        {id:'tea5', name:'Matcha Latte', price:32000, img:'img/tea5.png', desc:'Matcha bubuk whisked dengan susu.' , rating:4.7},
+        {id:'tea6', name:'Chai Latte', price:30000, img:'img/tea6.png', desc:'Rempah hangat + susu.' , rating:4.6},
+        {id:'tea7', name:'Oolong Tea', price:22000, img:'img/tea7.png', desc:'Rasa kompleks, semi-oxidized.' , rating:4.3},
+        {id:'tea8', name:'Peppermint Tea', price:18000, img:'img/tea8.png', desc:'Segar & melegakan.' , rating:4.2},
+        {id:'tea9', name:'Chamomile', price:18000, img:'img/tea9.png', desc:'Ringan, cocok untuk tenang sebelum tidur.' , rating:4.1},
+        {id:'tea10', name:'Thai Iced Tea', price:28000, img:'img/tea10.png', desc:'Manis & creamy, es teh ala Thailand.' , rating:4.6}
+      ],
+      noncoffee: [
+        {id:'noncoffee1', name:'Hot Chocolate', price:25000, img:'img/noncoffee1.png', desc:'Cokelat panas kental & comfy.' , rating:4.7},
+        {id:'noncoffee2', name:'Iced Chocolate', price:27000, img:'img/noncoffee2.png', desc:'Cokelat dingin dengan es krim.' , rating:4.6},
+        {id:'noncoffee3', name:'Strawberry Milkshake', price:30000, img:'img/noncoffee3.png', desc:'Creamy milkshake stroberi.' , rating:4.5},
+        {id:'noncoffee4', name:'Vanilla Milkshake', price:30000, img:'img/noncoffee4.png', desc:'Milkshake vanilla lembut.' , rating:4.4},
+        {id:'noncoffee5', name:'Banana Smoothie', price:28000, img:'img/noncoffee5.png', desc:'Pisang & susu, sehat & enak.' , rating:4.3},
+        {id:'noncoffee6', name:'Mango Smoothie', price:30000, img:'img/noncoffee6.png', desc:'Mangga segar dan krim.' , rating:4.6},
+        {id:'noncoffee7', name:'Berry Smoothie', price:31000, img:'img/noncoffee7.png', desc:'Campuran berry asam-manis.' , rating:4.5},
+        {id:'noncoffee8', name:'Matcha Frappe', price:33000, img:'img/noncoffee8.png', desc:'Frappe matcha dingin.' , rating:4.4},
+        {id:'noncoffee9', name:'Taro Latte', price:32000, img:'img/noncoffee9.png', desc:'Rasa ubi ungu, manis lembut.' , rating:4.2},
+        {id:'noncoffee10', name:'Lemonade', price:18000, img:'img/noncoffee10.jpg', desc:'Segar, asam manis alami.' , rating:4.1}
+      ],
+      dessert: [
+        {id:'dessert1', name:'Croissant', price:22000, img:'img/dessert1.png', desc:'Renyah & butterly.' , rating:4.5},
+        {id:'dessert2', name:'Pain au Chocolate', price:25000, img:'img/dessert2.png', desc:'Croissant isi cokelat.' , rating:4.6},
+        {id:'dessert3', name:'Blueberry Muffin', price:20000, img:'img/dessert3.png', desc:'Muffin lembut dengan blueberry.' , rating:4.4},
+        {id:'dessert4', name:'Banana Bread', price:18000, img:'img/dessert4.png', desc:'Roti pisang moist.' , rating:4.2},
+        {id:'dessert5', name:'Cheesecake', price:35000, img:'img/dessert5.png', desc:'Cheesecake creamy & lembut.' , rating:4.8},
+        {id:'dessert6', name:'Chocolate Lava Cake', price:38000, img:'img/dessert6.png', desc:'Lava cokelat meleleh.' , rating:4.8},
+        {id:'dessert7', name:'Tiramisu', price:37000, img:'img/dessert7.png', desc:'Klasik Italia, creamy & kopi.' , rating:4.7},
+        {id:'dessert8', name:'Macarons', price:32000, img:'img/dessert8.png', desc:'Makaron warna-warni, renyah di luar.' , rating:4.5},
+        {id:'dessert9', name:'Brownies', price:27000, img:'img/dessert9.png', desc:'Padat & chocolaty.' , rating:4.6},
+        {id:'dessert10', name:'Apple Pie', price:22000, img:'img/dessert10.png', desc:'Cruncy lucu & manis.' , rating:4.4}
+      ]
+    };
+
+    /* localStorage keys */
+    const CART_KEY = 'cuppy_cart_v1';
+    const FAV_KEY = 'cuppy_fav_v1';
+
+    /* initialize cart & fav */
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    let favs = JSON.parse(localStorage.getItem(FAV_KEY)) || [];
+
+    /* helper: format price */
+    function fmtRp(n){
+      return 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    /* render functions */
+    function createCard(item, category){
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.dataset.cat = category;
+      div.innerHTML = `
+        <img class="thumb" src="${item.img}" alt="${item.name}" data-id="${item.id}">
+        <div class="body">
+          <div>
+            <div class="title" data-id="${item.id}">${item.name}</div>
+            <div class="price">${fmtRp(item.price)}</div>
+            <div class="stars">${'★'.repeat(Math.round(item.rating))}</div>
+            <div class="meta muted">${(item.desc.length>60)?item.desc.slice(0,60)+'…':item.desc}</div>
+          </div>
+          <div class="actions">
+            <button class="btn add-btn" data-id="${item.id}">Add to Cart</button>
+            <button class="btn fav-btn" data-id="${item.id}">❤</button>
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
+    function renderAll(){
+      // coffee
+      const coffeeGrid = document.getElementById('coffeeGrid');
+      const teaGrid = document.getElementById('teaGrid');
+      const nonGrid = document.getElementById('noncoffeeGrid');
+      const dessertGrid = document.getElementById('dessertGrid');
+      coffeeGrid.innerHTML=''; teaGrid.innerHTML=''; nonGrid.innerHTML=''; dessertGrid.innerHTML='';
+      menus.coffee.forEach(i => coffeeGrid.appendChild(createCard(i,'coffee')));
+      menus.tea.forEach(i => teaGrid.appendChild(createCard(i,'tea')));
+      menus.noncoffee.forEach(i => nonGrid.appendChild(createCard(i,'noncoffee')));
+      menus.dessert.forEach(i => dessertGrid.appendChild(createCard(i,'dessert')));
+      attachCardEvents();
+      updateFavButtons();
+      updateCartCount();
+    }
+
+    /* attach click handlers (delegation-safe) */
+    function attachCardEvents(){
+      document.querySelectorAll('.thumb').forEach(img=>{
+        img.addEventListener('click', (e)=>{
+          const id = e.currentTarget.dataset.id;
+          openModalById(id);
+        });
+      });
+      document.querySelectorAll('.title').forEach(t=>{
+        t.addEventListener('click', (e)=>{
+          const id = e.currentTarget.dataset.id;
+          openModalById(id);
+        });
+      });
+      document.querySelectorAll('.add-btn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const id = e.currentTarget.dataset.id;
+          addToCartById(id);
+        });
+      });
+      document.querySelectorAll('.fav-btn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.stopPropagation();
+          const id = e.currentTarget.dataset.id;
+          toggleFav(id);
+        });
+      });
+    }
+
+    /* Modal / Popup logic */
+    const overlay = document.getElementById('overlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalImg = document.getElementById('modalImg');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalRating = document.getElementById('modalRating');
+    const modalAddBtn = document.getElementById('modalAddBtn');
+    const modalFavBtn = document.getElementById('modalFavBtn');
+
+    function findItemById(id){
+      for(const cat of Object.keys(menus)){
+        const found = menus[cat].find(x=>x.id===id);
+        if(found) return found;
+      }
+      return null;
+    }
+
+    function openModalById(id){
+      const item = findItemById(id);
+      if(!item) return;
+      modalTitle.textContent = item.name;
+      modalImg.src = item.img;
+      modalDesc.textContent = item.desc;
+      modalPrice.textContent = fmtRp(item.price);
+      modalRating.textContent = '★'.repeat(Math.round(item.rating)) + ' ('+item.rating.toFixed(1)+')';
+      // modal buttons actions
+      modalAddBtn.onclick = (e) => { e.stopPropagation(); addToCart(item); };
+      modalFavBtn.onclick = (e) => { e.stopPropagation(); toggleFav(item.id); updateFavButtons(); };
+      // set fav state on modal fav btn
+      if(favs.includes(item.id)) modalFavBtn.classList.add('active'); else modalFavBtn.classList.remove('active');
+      overlay.style.display = 'flex';
+      // prevent underlying page scroll (optional)
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e){
+      if(e) e.stopPropagation();
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function overlayClick(e){
+      // close only when clicking overlay (not modal)
+      if(e.target === overlay) closeModal();
+    }
+
+    /* Cart handling */
+    function addToCartById(id){
+      const item = findItemById(id);
+      if(item) addToCart(item);
+    }
+    function addToCart(item){
+      // store items as {id, name, price, qty}
+      const exist = cart.find(i=>i.id===item.id);
+      if(exist) exist.qty += 1;
+      else cart.push({id:item.id,name:item.name,price:item.price,qty:1,img:item.img});
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartCount();
+      // small feedback
+      flash(`${item.name} ditambahkan ke keranjang`);
+    }
+    function updateCartCount(){
+      const el = document.getElementById('cartCount');
+      const count = cart.reduce((s,i)=>s+i.qty,0);
+      el.textContent = count;
+    }
+
+    /* Favs handling */
+    function toggleFav(id){
+      const idx = favs.indexOf(id);
+      if(idx === -1) favs.push(id);
+      else favs.splice(idx,1);
+      localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+      updateFavButtons();
+      flash('Favorite updated');
+    }
+    function updateFavButtons(){
+      document.querySelectorAll('.fav-btn').forEach(btn=>{
+        const id = btn.dataset.id;
+        if(favs.includes(id)) btn.classList.add('active'); else btn.classList.remove('active');
+      });
+      // also update modal fav status
+      if(modalFavBtn){
+        const mid = modalTitle.textContent && findItemById(modalTitle.textContent.toLowerCase()) ? null : null;
+      }
+    }
+
+    /* Search & Filter */
+    const searchInput = document.getElementById('search');
+    const catFilter = document.getElementById('categoryFilter');
+
+    function applyFilters(){
+      const term = searchInput.value.trim().toLowerCase();
+      const cat = catFilter.value;
+      document.querySelectorAll('.card').forEach(card=>{
+        const title = card.querySelector('.title').innerText.toLowerCase();
+        const priceText = card.querySelector('.price').innerText.toLowerCase();
+        const matchesTerm = !term || title.includes(term) || priceText.includes(term);
+        const matchesCat = (cat === 'all') || card.dataset.cat === cat;
+        card.style.display = (matchesTerm && matchesCat) ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    catFilter.addEventListener('change', applyFilters);
+
+    /* tiny toast/flash */
+    let flashTimer;
+    function flash(msg){
+      const t = document.createElement('div');
+      t.textContent = msg;
+      Object.assign(t.style,{position:'fixed',right:'20px',bottom:'20px',background:'#fff',padding:'10px 14px',borderRadius:'10px',boxShadow:'0 6px 18px rgba(0,0,0,0.12)',zIndex:3000});
+      document.body.appendChild(t);
+      clearTimeout(flashTimer);
+      flashTimer = setTimeout(()=>t.remove(),1400);
+    }
+
+    /* initial render */
+    renderAll();
+
+    /* ensure cartCount rendered on load */
+    updateCartCount();
+
+    /* close modal on Escape */
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+
+    /* Save cart/favs on unload (already saved on change but safe) */
+    window.addEventListener('beforeunload', ()=>{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); localStorage.setItem(FAV_KEY, JSON.stringify(favs)); });
+  </script>
+</body>
+</html>

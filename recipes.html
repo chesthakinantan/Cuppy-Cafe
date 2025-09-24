@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuppy Café — Recipes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --pink:#f8c8dc;
+      --beige:#fdf6ec;
+      --brown:#6b4226;
+      --accent:#d46a8a;
+      --text:#4a3c3c;
+      --shadow:0 6px 18px rgba(0,0,0,0.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Poppins",sans-serif;background:var(--beige);color:var(--text);}
+    nav{
+      position:fixed;top:0;left:0;width:100%;
+      background:linear-gradient(90deg,var(--pink),#fde7d9);
+      padding:14px 10px;z-index:1000;box-shadow:var(--shadow);
+      display:flex;justify-content:center;align-items:center;
+    }
+    nav .nav-inner{width:100%;max-width:1200px;display:flex;gap:18px;align-items:center;justify-content:center}
+    nav a{color:var(--text);text-decoration:none;font-weight:600;margin:0 10px}
+    nav a:hover{color:var(--brown)}
+
+    main{padding-top:90px;max-width:1200px;margin:0 auto;padding-left:20px;padding-right:20px}
+    h1{text-align:center;font-family:'Pacifico',cursive;font-size:2.2rem;color:var(--accent);margin:30px 0}
+    h2{font-size:1.6rem;color:var(--brown);margin:30px 0 15px;text-align:left}
+
+    .search-bar{margin:20px auto;text-align:center}
+    .search-bar input{width:80%;max-width:400px;padding:10px;border-radius:999px;border:1px solid #ccc;font-size:1rem}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+    .card{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:15px;text-align:center}
+    .card img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;margin-bottom:10px}
+    .card h3{font-size:1.1rem;margin-bottom:8px;color:var(--brown)}
+    .btns{display:flex;justify-content:center;gap:10px}
+    .btn{padding:8px 12px;border:none;border-radius:999px;cursor:pointer;font-size:0.9rem}
+    .fav-btn{background:var(--pink)}
+    .fav-btn:hover{background:var(--accent);color:#fff}
+    .view-btn{background:var(--accent);color:#fff}
+    .view-btn:hover{opacity:0.9}
+
+    /* Popup */
+    .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:2000;overflow:auto}
+    .popup-content{background:#fff;padding:20px;border-radius:20px;max-width:600px;width:100%;position:relative;box-shadow:var(--shadow)}
+    .popup h3{margin-bottom:10px;color:var(--accent)}
+    .popup h4{margin-top:15px;margin-bottom:5px;color:var(--brown)}
+    .popup ul{margin-left:20px;margin-bottom:10px}
+    .close-btn{position:sticky;top:0;left:100%;background:var(--accent);color:#fff;border:none;border-radius:50%;width:35px;height:35px;font-size:18px;cursor:pointer;float:right}
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="home.html">Home</a>
+      <a href="menu.html">Menu</a>
+      <a href="recipes.html">Recipes</a>
+      <a href="cart.html">🛒 Cart</a>
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Our Recipes</h1>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search recipes...">
+    </div>
+
+    <!-- Coffee -->
+    <h2>☕ Coffee Recipes</h2>
+    <div class="grid" id="coffeeRecipes"></div>
+
+    <!-- Tea -->
+    <h2>🍵 Tea Recipes</h2>
+    <div class="grid" id="teaRecipes"></div>
+
+    <!-- Non-Coffee -->
+    <h2>🥤 Non-Coffee Recipes</h2>
+    <div class="grid" id="noncoffeeRecipes"></div>
+
+    <!-- Dessert -->
+    <h2>🍰 Dessert Recipes</h2>
+    <div class="grid" id="dessertRecipes"></div>
+  </main>
+
+  <!-- Popup -->
+  <div class="popup" id="popup">
+    <div class="popup-content" id="popupContent">
+      <button class="close-btn" onclick="closePopup()">✖</button>
+      <div id="popupBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const recipes = {
+      coffee:[
+        {img:"img/coffee1.png",name:"Espresso",ingredients:["2 tbsp ground coffee","60ml hot water"],steps:["Tamp coffee into portafilter","Brew for 25-30s"]},
+        {img:"img/coffee2.png",name:"Americano",ingredients:["1 shot espresso","100ml hot water"],steps:["Brew espresso","Add hot water"]},
+        {img:"img/coffee3.jpg",name:"Cappuccino",ingredients:["1 shot espresso","60ml steamed milk","Foamed milk"],steps:["Pull espresso","Add steamed milk","Top with foam"]},
+        {img:"img/coffee4.png",name:"Café Latte",ingredients:["1 shot espresso","150ml steamed milk"],steps:["Pull espresso","Pour steamed milk","Light foam top"]},
+        {img:"img/coffee5.png",name:"Caramel Macchiato",ingredients:["1 shot espresso","Milk","Caramel syrup"],steps:["Steam milk","Add syrup","Top with espresso"]},
+        {img:"img/coffee6.png",name:"Mocha",ingredients:["1 shot espresso","Chocolate syrup","Milk"],steps:["Mix espresso + chocolate","Add steamed milk"]},
+        {img:"img/coffee7.png",name:"Flat White",ingredients:["1 shot espresso","Steamed milk"],steps:["Pull espresso","Add thin milk foam"]},
+        {img:"img/coffee8.png",name:"Cortado",ingredients:["1 shot espresso","Equal milk"],steps:["Brew espresso","Add same amount milk"]},
+        {img:"img/coffee9.png",name:"Affogato",ingredients:["1 scoop vanilla ice cream","1 shot espresso"],steps:["Place ice cream in cup","Pour espresso"]},
+        {img:"img/coffee10.png",name:"Iced Latte",ingredients:["1 shot espresso","Milk","Ice"],steps:["Add ice","Pour milk","Top espresso"]}
+      ],
+      tea:[
+        {img:"img/tea1.png",name:"English Breakfast",ingredients:["1 tea bag","200ml hot water"],steps:["Steep 3-5 mins","Serve hot"]},
+        {img:"img/tea2.png",name:"Earl Grey",ingredients:["1 tsp Earl Grey tea","200ml hot water"],steps:["Steep 3-4 mins","Serve"]},
+        {img:"img/tea3.png",name:"Green Tea",ingredients:["1 tsp green tea","200ml water (80°C)"],steps:["Steep 2-3 mins","Serve"]},
+        {img:"img/tea4.png",name:"Jasmine Tea",ingredients:["1 tsp jasmine tea","200ml hot water"],steps:["Steep 2-3 mins","Serve"]},
+        {img:"img/tea5.png",name:"Matcha Latte",ingredients:["1 tsp matcha","Milk","Sugar"],steps:["Whisk matcha + water","Add milk"]},
+        {img:"img/tea6.png",name:"Chai Latte",ingredients:["Chai tea bag","Milk","Sugar"],steps:["Steep chai in milk","Sweeten"]},
+        {img:"img/tea7.png",name:"Oolong Tea",ingredients:["1 tsp oolong","200ml hot water"],steps:["Steep 3-5 mins","Serve"]},
+        {img:"img/tea8.png",name:"Peppermint Tea",ingredients:["Peppermint leaves","200ml hot water"],steps:["Steep 5 mins","Serve"]},
+        {img:"img/tea9.png",name:"Chamomile Tea",ingredients:["Chamomile flowers","200ml hot water"],steps:["Steep 5 mins","Serve"]},
+        {img:"img/tea10.png",name:"Thai Iced Tea",ingredients:["Thai tea","Milk","Sugar","Ice"],steps:["Brew tea","Add milk","Serve over ice"]}
+      ],
+      noncoffee:[
+        {img:"img/noncoffee1.png",name:"Hot Chocolate",ingredients:["2 tbsp cocoa","Milk","Sugar"],steps:["Mix cocoa + sugar","Whisk in hot milk"]},
+        {img:"img/noncoffee2.png",name:"Iced Chocolate",ingredients:["Cocoa","Milk","Ice"],steps:["Mix cocoa + milk","Serve over ice"]},
+        {img:"img/noncoffee3.png",name:"Strawberry Milkshake",ingredients:["Strawberries","Milk","Ice cream"],steps:["Blend all until smooth"]},
+        {img:"img/noncoffee4.png",name:"Vanilla Milkshake",ingredients:["Vanilla ice cream","Milk"],steps:["Blend until smooth"]},
+        {img:"img/noncoffee5.png",name:"Banana Smoothie",ingredients:["Banana","Milk","Honey"],steps:["Blend all ingredients"]},
+        {img:"img/noncoffee6.png",name:"Mango Smoothie",ingredients:["Mango","Milk","Sugar"],steps:["Blend until smooth"]},
+        {img:"img/noncoffee7.png",name:"Berry Smoothie",ingredients:["Berries","Yogurt","Honey"],steps:["Blend until smooth"]},
+        {img:"img/cookies.png",name:"Cookies & Cream Frappe",ingredients:["Cookies","Milk","Ice"],steps:["Blend cookies + milk + ice"]},
+        {img:"img/noncoffee8.png",name:"Matcha Frappe",ingredients:["Matcha","Milk","Ice"],steps:["Blend matcha + milk + ice"]},
+        {img:"img/noncoffee9.png",name:"Taro Latte",ingredients:["Taro powder","Milk","Sugar"],steps:["Mix taro + sugar","Add milk"]}
+      ],
+      dessert:[
+        {img:"img/dessert1.png",name:"Croissant",ingredients:["Flour","Butter","Yeast"],steps:["Make dough","Fold with butter","Bake"]},
+        {img:"img/dessert2.png",name:"Pain au Chocolate",ingredients:["Croissant dough","Chocolate"],steps:["Wrap chocolate","Bake"]},
+        {img:"img/dessert3.png",name:"Blueberry Muffin",ingredients:["Flour","Blueberries","Sugar"],steps:["Mix batter","Add berries","Bake"]},
+        {img:"img/dessert4.png",name:"Banana Bread",ingredients:["Bananas","Flour","Sugar"],steps:["Mash bananas","Mix with flour","Bake"]},
+        {img:"img/dessert5.png",name:"Cheesecake",ingredients:["Cream cheese","Biscuits","Sugar"],steps:["Make crust","Mix cheese filling","Bake"]},
+        {img:"img/dessert6.png",name:"Chocolate Lava Cake",ingredients:["Chocolate","Eggs","Flour"],steps:["Mix batter","Bake until gooey"]},
+        {img:"img/dessert7.png",name:"Tiramisu",ingredients:["Ladyfingers","Coffee","Mascarpone"],steps:["Layer ladyfingers + coffee","Add cream"]},
+        {img:"img/dessert8.png",name:"Macarons",ingredients:["Almond flour","Sugar","Egg whites"],steps:["Whisk meringue","Bake shells","Fill"]},
+        {img:"img/dessert9.png",name:"Brownies",ingredients:["Chocolate","Flour","Sugar"],steps:["Mix batter","Bake"]},
+        {img:"img/dessert10.png",name:"Apple Pie",ingredients:["Apples","Pastry dough","Sugar"],steps:["Make filling","Wrap with dough","Bake"]}
+      ]
+    };
+
+    function renderRecipes(){
+      for(let cat in recipes){
+        const container=document.getElementById(cat+"Recipes");
+        recipes[cat].forEach((r,idx)=>{
+          const card=document.createElement("div");
+          card.className="card";
+          card.innerHTML=`
+            <img src="${r.img}" alt="${r.name}">
+            <h3>${r.name}</h3>
+            <div class="btns">
+              <button class="btn fav-btn" onclick="toggleFav('${cat}',${idx})">❤️</button>
+              <button class="btn view-btn" onclick="viewRecipe('${cat}',${idx})">📖 View</button>
+            </div>`;
+          container.appendChild(card);
+        });
+      }
+    }
+
+    function viewRecipe(cat,idx){
+      const r=recipes[cat][idx];
+      let html=`<h3>${r.name}</h3>
+        <h4>Ingredients:</h4><ul>${r.ingredients.map(i=>`<li>${i}</li>`).join('')}</ul>
+        <h4>Tutorial:</h4><ul>${r.steps.map(s=>`<li>${s}</li>`).join('')}</ul>`;
+      document.getElementById("popupBody").innerHTML=html;
+      document.getElementById("popup").style.display="flex";
+    }
+    function closePopup(){document.getElementById("popup").style.display="none";}
+
+    const FAV_KEY="cuppy_fav_v1";
+    let favs=JSON.parse(localStorage.getItem(FAV_KEY))||[];
+    function toggleFav(cat,idx){
+      const item=recipes[cat][idx];
+      const key=item.name;
+      if(favs.includes(key)){
+        favs=favs.filter(f=>f!==key);
+      }else{favs.push(key);}
+      localStorage.setItem(FAV_KEY,JSON.stringify(favs));
+      alert("Favorites updated!");
+    }
+
+    document.getElementById("searchInput").addEventListener("input",function(){
+      const q=this.value.toLowerCase();
+      document.querySelectorAll(".card").forEach(c=>{
+        const name=c.querySelector("h3").textContent.toLowerCase();
+        c.style.display=name.includes(q)?"block":"none";
+      });
+    });
+
+    renderRecipes();
+  </script>
+</body>
+</html>
